@@ -66,7 +66,7 @@ def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5
   return data
   
   
-def classification_table(classification_data):
+def classification_table(classification_data, x_train):
 
   split_size = classification_data['split_size']
   df = DataFrame(data={'Train Accuracy': np.round(classification_data['train_accuracy'], 2), 
