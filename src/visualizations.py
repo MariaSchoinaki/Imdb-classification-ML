@@ -79,3 +79,35 @@ def classification_table(classification_data, x_train):
                          'F1 Test' : np.round(classification_data['test_f1'], 2)}, 
                    index=list(range(split_size, len(x_train) + split_size, split_size)))
   return df
+
+def plot_learning_curve(data, title="Learning Curve", full_scale=False):
+
+    split_size = data['split_size']
+    split = data['splits']
+    splits = list(range(split_size, split*split_size + split_size, split_size))
+    train_acc = data['train_accuracy']
+    test_acc = data['test_accuracy']
+
+    train_scores_std = np.std(train_acc)
+    val_scores_std = np.std(test_acc)
+
+    if full_scale:
+        plt.ylim(0, 1)
+    plt.title(title)
+    plt.xlabel("Training Examples")
+    plt.ylabel("Accuracy")
+    plt.plot()
+
+    plt.fill_between(splits, train_acc - train_scores_std,
+                     train_acc + train_scores_std, alpha=0.1,
+                     color="b")
+    plt.fill_between(splits, test_acc - val_scores_std,
+                     test_acc + val_scores_std, alpha=0.1,
+                     color="green")
+    plt.plot(splits, train_acc, 'o-', color="b",
+             label="Training score")
+    plt.plot(splits, test_acc, 'o-', color="green",
+             label="Validation score")
+
+    plt.legend(loc="best")
+    plt.show()
