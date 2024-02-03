@@ -5,9 +5,10 @@ from matplotlib import pyplot as plt
 from pandas import DataFrame
 import IPython.display as ipd
 import numpy as np
+import tensorflow as tf
 
 
-def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5):
+def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5, model=None):
 
     train_accuracy, test_accuracy, train_precisions, test_precisions, train_recall, test_recall, train_f1, test_f1 = [], [], [], [], [], [], [], []
 
@@ -30,6 +31,9 @@ def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5
         train_pred = classifier.predict(x_train)
         test_pred = classifier.predict(x_test)
         
+        if (model is not None):
+            train_pred = tf.argmax(test_pred, axis=-1)
+            test_pred = tf.argmax(test_pred, axis=-1)
         # Calculate and save the accuracy score
         train_accuracy.append(accuracy_score(y_train, train_pred))
         test_accuracy.append(accuracy_score(y_test, test_pred))
@@ -124,28 +128,79 @@ def classification_plots(data, full_scale=False):
     figure.suptitle("Learning Curve for {estimator}".format(estimator = data['estimator']), fontsize=16)
     labels = ['Accuracy', 'Precision', 'Recall', 'F1']
 
-    axis[0,0].plot(x_splits, data['train_accuracy'], 'o-', color="b",  label='Training Accuracy')
-    axis[0,0].plot(x_splits, data['test_accuracy'], 'o-', color="red",label='Test Accuracy')
-    axis[0,0].legend(loc="lower right")
+    axis[0,0].plot(x_splits, data['train_accuracy'], '-', color="maroon",  label='Train')
+    axis[0,0].plot(x_splits, data['test_accuracy'], '-', color="#7CC249",label='Testing')
 
-    axis[0,1].plot(x_splits, data['train_precision'], 'o-', color="b",  label='Training Precision')
-    axis[0,1].plot(x_splits, data['test_precision'], 'o-', color="red",label='Test Precision')
-    axis[0,1].legend(loc="lower right")
+    axis[0,1].plot(x_splits, data['train_precision'], '-', color="maroon",  label='Train')
+    axis[0,1].plot(x_splits, data['test_precision'], '-', color="#7CC249",label='Test')
 
-    axis[1,0].plot(x_splits, data['train_recall'], 'o-', color="b",  label='Training Recall')
-    axis[1,0].plotx_split(x_splits, data['test_recall'], 'o-', color="red",label='Test Recall')
-    axis[1,0].legend(loc="lower right")
+    axis[1,0].plot(x_splits, data['train_recall'], '-', color="maroon",  label='Train')
+    axis[1,0].plot(x_splits, data['test_recall'], '-', color="#7CC249",label='Test')
 
-    axis[1,1].plot(x_splits, data['train_f1'], 'o-', color="b",  label='Training f1')
-    axis[1,1].plot(x_splits, data['test_f1'], 'o-', color="red",label='Test f1')
-    axis[1,1].legend(loc="lower right")
+    axis[1,1].plot(x_splits, data['train_f1'], '-', color="maroon",  label='Train')
+    axis[1,1].plot(x_splits, data['test_f1'], '-', color="#7CC249",label='Test')
+
+    for i in [0,1]:
+        for j in [0,1]:
+            axis[i,j].set_title(labels[i * 2 + j])
+            if full_scale:
+                axis[i,j].axis(ymin= 0.0, ymax= 1.0)
+
+    handles, labels = axis[1, 1].get_legend_handles_labels()
+    figure.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=2, fancybox=True, shadow=True)
+
+
+    return figure
+
+def classification_plots_compare(estimator_data1, estimator_data2, full_scale = False):
+    split_size = estimator_data1['split_size']
+    splits = estimator_data1['splits']
     
-    if full_scale:
-        for i , j in zip([0,1], [0,1]):
-            axis[i,j].axis(ymin= 0.0, ymax= 1.0)
+    figure, axis = plt.subplots(2, 2, figsize=(6, 6), dpi=100, gridspec_kw={'width_ratios': [1, 1], 'height_ratios': [1, 1]})
+    figure.suptitle("Learning Curve Comparison for {estimator} against {estimator_2} ".format(estimator = estimator_data1['estimator'], estimator_2 = estimator_data2['estimator']), fontsize=12)
+    labels = ['Accuracy', 'Precision', 'Recall', 'F1']
+    x_splits = list(range(split_size, splits*split_size + split_size, split_size))
 
-    # handles, labels = axis[1, 1].get_legend_handles_labels()
-    # figure.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.05), ncol=2, fancybox=True, shadow=True)
-    figure.tight_layout()
+    axis[0,0].plot(x_splits, estimator_data1['train_accuracy'], '-', color="red",  label="Training {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[0,0].plot(x_splits, estimator_data1['test_accuracy'], '-', color="#7CC249",label="Testing {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[0,0].plot(x_splits, estimator_data2['train_accuracy'], '-', color="gold",  label="Training {estimator}".format(estimator=estimator_data2['estimator']))
+    axis[0,0].plot(x_splits, estimator_data2['test_accuracy'], '-', color="b",label="Testing {estimator}".format(estimator=estimator_data2['estimator']))
 
+    axis[0,1].plot(x_splits, estimator_data1['train_precision'], '-', color="red",  label="Training {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[0,1].plot(x_splits, estimator_data1['test_precision'], '-', color="#7CC249",label="Testing {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[0,1].plot(x_splits, estimator_data2['train_precision'], '-', color="gold", label="Training {estimator}".format(estimator=estimator_data2['estimator']))
+    axis[0,1].plot(x_splits, estimator_data2['test_precision'], '-', color="b",label="Testing {estimator}".format(estimator=estimator_data2['estimator']))
+
+    axis[1,0].plot(x_splits, estimator_data1['train_recall'], '-', color="red", label="Training {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[1,0].plot(x_splits, estimator_data1['test_recall'], '-', color="#7CC249",label="Testing {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[1,0].plot(x_splits, estimator_data2['train_recall'], '-', color="gold", label="Training {estimator}".format(estimator=estimator_data2['estimator']))
+    axis[1,0].plot(x_splits, estimator_data2['test_recall'], '-', color="b",label="Testing {estimator}".format(estimator=estimator_data2['estimator']))
+
+    axis[1,1].plot(x_splits, estimator_data1['train_f1'], '-', color="red", label="Training {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[1,1].plot(x_splits, estimator_data1['test_f1'], '-', color="#7CC249",label="Testing {estimator}".format(estimator=estimator_data1['estimator']))
+    axis[1,1].plot(x_splits, estimator_data2['train_f1'], '-', color="gold", label="Training {estimator}".format(estimator=estimator_data2['estimator']))
+    axis[1,1].plot(x_splits, estimator_data2['test_f1'], '-', color="b",label="Testing {estimator}".format(estimator=estimator_data2['estimator']))
+    
+    for i in [0,1]:
+        for j in [0,1]:
+            axis[i,j].set_title(labels[i * 2 + j])
+            if full_scale:
+                axis[i,j].axis(ymin= 0.0, ymax= 1.0)
+    handles, labels = axis[1, 1].get_legend_handles_labels()
+    figure.legend(handles, labels, loc='lower center', bbox_to_anchor=(0.5, -0.1), ncol=2, fancybox=True, shadow=True)
+
+    return figure
+
+def loss_plot(history, kind):
+
+    figure, axis = plt.subplots(1, 1, figsize=(6, 6), dpi=100)
+    axis.set_xlabel('Epoch')
+    axis.set_xlabel('Epoch')
+    axis.set_ylabel('Loss')
+    train = history.history[kind]
+    val = history.history['val_' + kind]
+    epochs = range(1, len(train)+1)
+    axis.plot(epochs, train, 'b', label='Training ' + kind)
+    axis.plot(epochs, val, 'orange', label='Validation ' + kind)
+    axis.legend(loc="upper right")
     return figure
