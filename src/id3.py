@@ -9,6 +9,8 @@ class Node:
         self.right_child = None
         self.is_leaf = is_leaf
         self.category = category
+        
+
 
 class ID3:
     def __init__(self, features):
@@ -24,32 +26,39 @@ class ID3:
         return self.tree
     
     def create_tree(self, x_train, y_train, features, category):
+        
         # check empty data
         if len(x_train) == 0:
             return Node(checking_feature=None, is_leaf=True, category=category)  # decision node
+        
         # check all examples belonging in one category
         if np.all(y_train.flatten() == 0):
             return Node(checking_feature=None, is_leaf=True, category=0)
         elif np.all(y_train.flatten() == 1):
             return Node(checking_feature=None, is_leaf=True, category=1)
+        
         if len(features) == 0:
             return Node(checking_feature=None, is_leaf=True, category=mode(y_train.flatten()))
+        
         igs = list()
         for feat_index in features.flatten():
             igs.append(self.calculate_ig(y_train.flatten(), [example[feat_index] for example in x_train]))
-
+        
         max_ig_idx = np.argmax(np.array(igs).flatten())
         m = mode(y_train.flatten())  # most common category 
+
         root = Node(checking_feature=max_ig_idx)
+
         # data subset with X = 0
         x_train_0 = x_train[x_train[:, max_ig_idx] == 0, :]
         y_train_0 = y_train[x_train[:, max_ig_idx] == 0].flatten()
+
         # data subset with X = 1
         x_train_1 = x_train[x_train[:, max_ig_idx] == 1, :]
         y_train_1 = y_train[x_train[:, max_ig_idx] == 1].flatten()
-        
+
         new_features_indices = np.delete(features.flatten(), max_ig_idx)  # remove current feature
-       
+
         root.left_child = self.create_tree(x_train=x_train_1, y_train=y_train_1, features=new_features_indices, 
                                            category=m)  # go left for X = 1
         
@@ -89,6 +98,8 @@ class ID3:
         ig = HC - HC_feature
         return ig    
 
+        
+
     def predict(self, x):
         predicted_classes = list()
 
@@ -103,3 +114,6 @@ class ID3:
             predicted_classes.append(tmp.category)
         
         return np.array(predicted_classes)
+
+
+            
