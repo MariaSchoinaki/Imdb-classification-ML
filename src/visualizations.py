@@ -32,8 +32,8 @@ def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5
         test_pred = classifier.predict(x_test)
         
         if (model is not None):
-            train_pred = tf.argmax(test_pred, axis=-1)
-            test_pred = tf.argmax(test_pred, axis=-1)
+            train_pred = [1 if x > 0.5 else 0 for x in train_pred]
+            test_pred =  [1 if x > 0.5 else 0 for x in test_pred]
         # Calculate and save the accuracy score
         train_accuracy.append(accuracy_score(y_train, train_pred))
         test_accuracy.append(accuracy_score(y_test, test_pred))
