@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 
 
-def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5, model=None):
+def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5):
 
     train_accuracy, test_accuracy, train_precisions, test_precisions, train_recall, test_recall, train_f1, test_f1 = [], [], [], [], [], [], [], []
 
@@ -31,9 +31,6 @@ def classification_data(classifier, x_train, y_train, x_test, y_test, splits = 5
         train_pred = classifier.predict(x_train)
         test_pred = classifier.predict(x_test)
         
-        if (model is not None):
-            train_pred = [1 if x > 0.5 else 0 for x in train_pred]
-            test_pred =  [1 if x > 0.5 else 0 for x in test_pred]
         # Calculate and save the accuracy score
         train_accuracy.append(accuracy_score(y_train, train_pred))
         test_accuracy.append(accuracy_score(y_test, test_pred))
