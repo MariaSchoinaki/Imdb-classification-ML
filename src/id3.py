@@ -9,8 +9,6 @@ class Node:
         self.right_child = None
         self.is_leaf = is_leaf
         self.category = category
-        
-
 
 class ID3:
     def __init__(self, features):
@@ -22,7 +20,7 @@ class ID3:
         creates the tree
         '''
         most_common = mode(y.flatten())
-        self.tree = self.create_tree(x, y, features=np.arange(len(self.features)), category=most_common)
+        self.tree = self.create_tree(x, y, self.features, category=most_common)
         return self.tree
     
     def create_tree(self, x_train, y_train, features, category):
