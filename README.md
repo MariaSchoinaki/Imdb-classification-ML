@@ -1,6 +1,6 @@
 # Sentiment Analysis on Movie Reviews
 
-This project classifies ueser's reviews to positive or negative from the known IMDB platform.
+This project classifies user's reviews to positive or negative from the known IMDB platform.
 In order to achieve this , 3 machine learning algorithms and one mlp were implemented and trained by the IMDB review dataset.
 The 4 pelars of this project are :
   - Random Forest
