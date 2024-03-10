@@ -25,7 +25,7 @@ The 4 pelars of this project are :
 Make sure you have installed the mistune library on your system.
 If you have not, run:
 ```sh
-   >> sudo pip install -U mistune
+   >> pip install -U mistune
 ``` 
 
 
