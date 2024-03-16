@@ -1,32 +1,48 @@
-# Sentiment Analysis on Movie Reviews
+# Sentiment Analysis on IMDb Movie Reviews
 
-This project classifies user's reviews to positive or negative from the known IMDB platform.
-In order to achieve this , 3 machine learning algorithms and one mlp were implemented and trained by the IMDB review dataset.
-The 4 pelars of this project are :
-  - Random Forest
-  - Logistic Regression
-  - Bernoulli Nave Bays
-  - Sequential MLP
+This repository hosts a sentiment analysis project performed on IMDb movie reviews using machine learning algorithms. 
+This project was prepared within the framework of the Artificial Intelligence course taught in the 5th semester of Informatics at AUEB.
 
-# How to run:
-## Every user has 2 option to run this project:
-## 1. Jupiter notebook (recommended)
+The datased used is the [IMDb movie review sentiment classification dataset](https://keras.io/api/datasets/imdb/). 
+It consists of 25,000 movies reviews from IMDb, labeled by sentiment (positive/negative).
+
+The machine lerning algorithms we chose to implement are:
+- Random Forest
+- Logistic Regression
+- Bernoulli Naive Bayes
+
+We also implemented a Multilayer Perceptron (MLP) as a class that has the methods fit and predict.
+
+
+## Overview
+
+Under the folder src you can find our source code, that is, the implementation of all the algorithms mentioned above and the MLP.
+Every algorithm is written in a Jupyter Notebook with all code cells ran, so you can easily see the outputs, 
+mostly the learning curves, classifications reports, plots and comparisson plots.
+
+In each notebook you will see the below:
+- How we fetch and process the data from the IMDB database. (Each algorithm has its own hyperparameters, specifically selected to give the best results)
+- The implemantation of the algorithm.
+- Train the model using the train data set and then using the model to predict another set of data.
+- The learning curve of the model
+- Classification table, showing the metrics in each state of learning as the data set is growing.
+- Classifications plots, showing diagrams for all the metrics (Accuracy, Recall, Percision, F1)
+- Classifications plots for comparisson, showing the results of each metric of two algorithms in a plot.
+- Algorithm for finding the best hyperparameters by optimazing the accuracy score in the validation data set.
+
+You can also find our report to all of the above in the main branch, featuring the diagrams mentioned.
+The report is written in 
+[greek](https://github.com/ChristosStamoulos/Imdb-classification-ML/blob/main/report_greek.pdf) and in 
+[english](https://github.com/ChristosStamoulos/Imdb-classification-ML/blob/main/report_english.pdf).
+
+## How to run:
   1. Clone the project.
-  2. Open a project from an IDE that supports Jupiter's notebook extension.
-  3. Run every cell from top to bottom from the desired training model.
-  
-## 2. Terminal
-  1. Clone the project.
-  2. Open your terminal
-  3. You have to convert the notebook file to simple python file so run this command in the project's directory.
-```sh
-   >> jupyter nbconvert -- to python <selected file>.ipynb
-```     
-Make sure you have installed the mistune library on your system.
-If you have not, run:
-```sh
-   >> pip install -U mistune
-``` 
+  2. Open the project from an IDE that supports Jupiter notebooks.
+  3. Run the cells in the order they are.
+> **Note** that some algorithms take up to half an hour to run completely.
 
-
+## Collaborators 
+- [Eleni Kechrioti](https://github.com/EleniKechrioti)
+- [Maria Schoinaki](https://github.com/MariaSchoinaki)
+- [CHristos Stamoulos](https://github.com/ChristosStamoulos)
 
